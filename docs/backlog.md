@@ -33,3 +33,16 @@ Lista de tarefas prioritárias organizadas por marcos de entrega.
 - [ ] Adição de docstrings em todos os endpoints.
 - [ ] Configuração de logs da aplicação.
 - [ ] Tratamento global de exceções.
+
+## 🛠️ Dívida Técnica e Qualidade
+- [ ] **Refatorar Injeção de Dependência**: Substituir a instanciação manual no router por um sistema de DI (ex: `FastAPI Depends`) para facilitar mocks.
+- [ ] **Desacoplar IO do Advisor**: Isolar a leitura de variáveis de ambiente e logs para tornar o componente mais testável.
+- [ ] **Validar Entradas no Advisor**: Adicionar verificações para títulos vazios ou apenas com espaços.
+- [ ] **Robustez no Repositório**: Implementar tratamento de exceções de banco de dados e validações de integridade.
+
+## 🧪 Testes Prioritários (Próxima Release)
+- [ ] **Teste de Fallback**: Validar heurística local quando o LLM falha ou está sem chave.
+- [ ] **Teste de Integração de Serviço**: Validar `TaskService` com repositório mockado.
+- [ ] **Teste de Erros HTTP**: Validar retornos 404 para recursos inexistentes.
+- [ ] **Teste de Schema**: Validar restrições de caracteres e campos obrigatórios via Pydantic.
+- [ ] **Teste de Idempotência**: Validar comportamento de exclusão repetida.
