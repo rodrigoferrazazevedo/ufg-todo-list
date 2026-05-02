@@ -105,3 +105,18 @@ O acompanhamento detalhado da evolução do projeto pode ser feito através do n
 * **Banco de Dados:** Migrar para **SQLite** utilizando **SQLModel**.
 * **Middleware de Erros:** Implementar handlers globais para exceções padronizadas.
 
+---
+
+## 🤖 Assistência de IA
+
+Este projeto foi desenvolvido com o suporte da Inteligência Artificial (Gemini CLI), atuando como parceiro de programação sênior.
+
+**Destaques da Colaboração:**
+*   **Refatoração Arquitetural:** Aplicação de padrões de projeto (Repository, Service Layer) e princípios SOLID.
+*   **QA Automatizado:** Geração de suíte de testes completa com cobertura de serviços, rotas e lógica de IA.
+*   **Documentação Contínua:** Manutenção sincronizada de diagramas, backlog e análise de riscos técnicos.
+*   **Debugging Proativo:** Resolução de conflitos de ambiente e logs assíncronos.
+
+Consulte o [Relato Completo de Assistência de IA](docs/relatorio-ia.md) para mais detalhes sobre a metodologia utilizada.
+
+
