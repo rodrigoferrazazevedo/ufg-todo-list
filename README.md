@@ -4,7 +4,7 @@ Uma API RESTful desenvolvida com FastAPI para gerenciamento de tarefas, apresent
 
 ## 🚀 Arquitetura e Tecnologias
 
-O projeto segue princípios de **Clean Architecture** e **SOLID**, garantindo baixo acoplamento e facilidade de teste:
+O projeto segue princípios de **Clean Architecture** e **SOLID**, garantindo baixo acoplamento e facilidade de teste. Para uma visão detalhada, consulte nosso [Documento de Arquitetura](docs/arquitetura.md).
 
 - **FastAPI**: Framework web moderno e de alta performance.
 - **Pydantic V2**: Validação de dados e definição de schemas.
@@ -22,7 +22,7 @@ O projeto segue princípios de **Clean Architecture** e **SOLID**, garantindo ba
 
 1. **Clonar o repositório:**
    ```bash
-   git clone <url-do-repositorio>
+   git clone git@github.com:rodrigoferrazazevedo/ufg-todo-list.git
    cd laboratorio-projeto
    ```
 
@@ -61,26 +61,26 @@ A suíte de testes utiliza **Pytest** e cobre serviços, rotas e lógica de IA:
 ```bash
 # Executar todos os testes
 pytest
-
-# Executar com relatório de cobertura (se instalado)
-pytest --cov=app tests/
 ```
 
 ## 🧠 Inteligência Artificial (Priority Advisor)
 
-O sistema de prioridade opera em três níveis de confiança:
+O sistema de prioridade opera em três níveis de confiança. Detalhes sobre o planejamento podem ser vistos no [Documento de Escopo](docs/escopo-mvp.md).
+
 1. **LLM (OpenAI):** Tenta uma análise semântica profunda via API.
 2. **Fallback (Timeout/Erro):** Se a API falhar ou demorar mais de 5s, o sistema aciona automaticamente a heurística local.
-3. **Heurística Local:** Analisa palavras-chave (ex: "urgente", "erro", "amanhã") para determinar a prioridade sem custo ou latência externa.
+3. **Heurística Local:** Analisa palavras-chave para determinar a prioridade sem custo ou latência externa.
 
 ## ⚠️ Limitações do MVP
 - **Persistência Volátil:** Os dados são armazenados em memória e perdidos ao reiniciar o servidor.
 - **Autenticação:** Não implementada nesta versão inicial.
-- **Integração LLM:** Atualmente em modo de simulação/stub (implementação base presente).
 
 ## 🛤️ Próximos Passos
-- [ ] Implementar persistência real com **SQLAlchemy** e SQLite/PostgreSQL.
-- [ ] Adicionar suporte a **Tags** e Categorias.
+
+O acompanhamento detalhado da evolução do projeto pode ser feito através do nosso [Backlog Completo](docs/backlog.md).
+
+- [ ] Implementar persistência real com **SQLite** e **SQLModel**.
+- [ ] Adicionar suporte a **Filtros** na listagem de tarefas.
 - [ ] Implementar **JWT Authentication**.
 - [ ] Dashboard de visualização de tarefas por prioridade.
 
