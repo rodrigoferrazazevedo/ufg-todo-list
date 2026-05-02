@@ -89,19 +89,19 @@ O sistema de prioridade opera em três níveis de confiança:
 ## 🔍 Checklist Técnico e Evolução
 
 ### **Riscos Técnicos Restantes**
-* **Perda de Dados:** O repositório é instanciado a cada requisição no `get_task_service`, limpando o armazenamento em memória (as tarefas não persistem entre chamadas).
-* **Concorrência:** O dicionário `_storage` não está protegido contra condições de corrida em operações assíncronas simultâneas.
-* **API Inacessível:** As rotas de tarefas ainda não foram registradas no `app/main.py`.
+* **Volatilidade de Dados:** O repositório é instanciado a cada requisição no `task_routes.py`, fazendo com que os dados sejam perdidos imediatamente após cada chamada HTTP (falta de Singleton/Injeção persistente).
+* **API "Invisível":** O arquivo `app/main.py` ainda não registra o roteador de tarefas, impedindo o acesso aos endpoints via servidor Uvicorn.
+* **Concorrência:** O armazenamento em `dict` não é thread-safe para operações assíncronas simultâneas em produção.
 * **Stub de IA:** O `PriorityAdvisor` utiliza um stub; a integração real com LangChain/OpenAI ainda não foi finalizada.
 
 ### **Gaps de Cobertura de Teste**
-* **Validação de Modelos:** Testar limites de caracteres (`min_length`, `max_length`) e padrões de status inválidos.
-* **Injeção de Dependência:** Validar se o `get_task_service` instancia os componentes corretamente.
-* **Integração (E2E):** Testar o fluxo completo desde o HTTP até a persistência sem mocks de serviço.
+* **Validação de Models:** Testar restrições do Pydantic (ex: títulos vazios ou status inválidos).
+* **Persistência entre Chamadas:** Validar se uma tarefa criada via POST permanece disponível em GETs subsequentes.
+* **Captura de Logs:** Corrigir a propagação de logs para validação de fallbacks nos testes assíncronos.
 
 ### **Melhorias Prioritárias (Próxima Release)**
-* **Persistência Singleton:** Garantir instância única do repositório no ciclo de vida da API.
-* **Integração de Rotas:** Registrar o roteador no arquivo principal.
+* **Injeção de Singleton:** Garantir instância única do repositório no ciclo de vida da API.
+* **Registro de Rotas:** Conectar o roteador ao arquivo principal `main.py`.
 * **Banco de Dados:** Migrar para **SQLite** utilizando **SQLModel**.
-* **Tratamento de Erros:** Implementar handlers globais para exceções.
+* **Middleware de Erros:** Implementar handlers globais para exceções padronizadas.
 
