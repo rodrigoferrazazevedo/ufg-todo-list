@@ -1,48 +1,30 @@
 # Backlog - Task Manager AI
 
-Lista de tarefas prioritárias organizadas por marcos de entrega.
+## ✅ Concluído (v0.1.0)
+- [x] Setup inicial e Health Check.
+- [x] CRUD completo de tarefas (Routes, Service, Repository).
+- [x] Lógica de IA híbrida (PriorityAdvisor) com Fallback Local.
+- [x] Cobertura de testes automatizados (Pytest).
+- [x] Refatoração SRP/DRY do repositório e serviços.
 
-## 🏁 Milestone 1: MVP Foundation (v0.1.0)
-- [x] Configuração inicial do repositório (.gitignore, venv, requirements).
-- [x] Definição de README e Escopo.
-- [x] Endpoint de `/health`.
-- [ ] Modelagem do banco de dados com SQLModel (Tarefa: id, title, description, priority, status).
-- [ ] Configuração da conexão com SQLite e migrações.
-- [ ] Implementação do CRUD de tarefas:
-    - [ ] `POST /tasks`: Criar nova tarefa.
-    - [ ] `GET /tasks`: Listar todas as tarefas.
-    - [ ] `GET /tasks/{id}`: Obter detalhe de uma tarefa.
-    - [ ] `PATCH /tasks/{id}`: Atualizar tarefa.
-    - [ ] `DELETE /tasks/{id}`: Remover tarefa.
+## 🏁 Milestone 1: Data Persistence & Integration (v0.2.0)
+- [ ] **Registro Global de Rotas**: Conectar `task_routes.py` ao `app/main.py`.
+- [ ] **SQLModel Integration**: Migrar o armazenamento de memória para SQLite.
+- [ ] **Injeção de Singleton**: Garantir que o repositório mantenha o estado entre requisições HTTP.
+- [ ] **Filtros de Listagem**: Implementar `priority` e `status` como filtros no `GET /tasks`.
 
-## 🧠 Milestone 2: AI Integration (v0.2.0)
-- [ ] Configuração da estrutura de serviços para IA.
-- [ ] Implementação de Service para integração com OpenAI/LangChain.
-- [ ] Endpoint `POST /tasks/{id}/prioritize`:
-    - Envia descrição para IA e atualiza o campo `priority` automaticamente.
-- [ ] Endpoint `GET /tasks/smart-sort`:
-    - Retorna lista ordenada por sugestão da IA.
+## 🧠 Milestone 2: AI Enhancements (v0.3.0)
+- [ ] **Integração Real OpenAI**: Substituir stub por chamada real via LangChain.
+- [ ] **Justificativa da IA**: Adicionar campo `priority_reason` ao modelo, explicando por que a IA escolheu aquela prioridade.
+- [ ] **Análise em Lote**: Endpoint para re-priorizar todas as tarefas pendentes de uma vez.
 
 ## 🚀 Milestone 3: Production Ready (v1.0.0)
-- [ ] Implementação de Autenticação JWT.
-- [ ] Adição de campo `owner_id` nas tarefas.
-- [ ] Criação de Dockerfile e docker-compose.yml.
-- [ ] Configuração de testes automatizados com Pytest.
+- [ ] Autenticação JWT.
+- [ ] Dockerização (Dockerfile + Compose).
+- [ ] CI/CD Pipeline (GitHub Actions para Pytest).
 
-## 📝 Documentação e Melhorias
-- [ ] Adição de docstrings em todos os endpoints.
-- [ ] Configuração de logs da aplicação.
-- [ ] Tratamento global de exceções.
-
-## 🛠️ Dívida Técnica e Qualidade
-- [ ] **Refatorar Injeção de Dependência**: Substituir a instanciação manual no router por um sistema de DI (ex: `FastAPI Depends`) para facilitar mocks.
-- [ ] **Desacoplar IO do Advisor**: Isolar a leitura de variáveis de ambiente e logs para tornar o componente mais testável.
-- [ ] **Validar Entradas no Advisor**: Adicionar verificações para títulos vazios ou apenas com espaços.
-- [ ] **Robustez no Repositório**: Implementar tratamento de exceções de banco de dados e validações de integridade.
-
-## 🧪 Testes Prioritários (Próxima Release)
-- [ ] **Teste de Fallback**: Validar heurística local quando o LLM falha ou está sem chave.
-- [ ] **Teste de Integração de Serviço**: Validar `TaskService` com repositório mockado.
-- [ ] **Teste de Erros HTTP**: Validar retornos 404 para recursos inexistentes.
-- [ ] **Teste de Schema**: Validar restrições de caracteres e campos obrigatórios via Pydantic.
-- [ ] **Teste de Idempotência**: Validar comportamento de exclusão repetida.
+## 🛠️ Dívida Técnica e Qualidade (Próxima Sprint)
+- [ ] **Fix Test Logs**: Corrigir propagação de log nos testes de fallback do `PriorityAdvisor`.
+- [ ] **Schema Validation**: Adicionar testes para limites de caracteres no Pydantic.
+- [ ] **Thread Safety**: Se mantiver in-memory, proteger o `_storage` com Lock/Semaphore.
+- [ ] **API Error Handling**: Padronizar respostas de erro (404, 422, 500).
