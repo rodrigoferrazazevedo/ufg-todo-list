@@ -46,15 +46,25 @@ O projeto segue princípios de **Clean Architecture** e **SOLID**, garantindo ba
    OPENAI_API_KEY=sua_chave_aqui
    ```
 
-## 🏃 Execução
+## 🏃 Execução e Comandos Rápidos
 
-Para iniciar o servidor de desenvolvimento:
+O projeto inclui um `Makefile` para facilitar as operações comuns:
+
+```bash
+make install  # Instala dependências
+make run      # Inicia o servidor local
+make test     # Executa todos os testes
+make clean    # Limpa arquivos temporários e cache
+```
+
+Para ver todos os comandos disponíveis, use `make help`.
+
+### Execução Manual
+Caso prefira não usar o Makefile:
 
 ```bash
 uvicorn app.main:app --reload
 ```
-
-Acesse a documentação interativa em: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ## 🧪 Testes
 
