@@ -5,6 +5,17 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-05-02
+
+### Adicionado
+- **Suíte de Testes Estendida**: Inclusão de testes unitários para o `TaskRepository` e validações de esquema.
+- **Makefile**: Automação de comandos para instalação, execução e testes.
+- **Configuração de Ambiente**: Inclusão de `.env.example`.
+
+### Modificado
+- **README Consolidado**: Reescrita completa com justificativas técnicas, exemplos de `curl` e navegação detalhada.
+- **Estabilidade**: Correção de avisos de depreciação e polimento de imports.
+
 ## [0.3.0] - 2026-05-02
 
 ### Adicionado

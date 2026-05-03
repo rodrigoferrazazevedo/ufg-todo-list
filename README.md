@@ -1,6 +1,6 @@
 # Task Manager AI - Micro-API de Gerenciamento de Tarefas
 
-[![Changelog](https://img.shields.io/badge/changelog-v0.3.0-blue)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-v1.0.0-blue)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 API RESTful para gerenciamento de tarefas (To-Do List) com diferencial de **Priorização Assistida por Inteligência Artificial**. O sistema analisa semânticamente o título e a descrição das tarefas para sugerir automaticamente sua urgência.
