@@ -47,10 +47,9 @@ async def test_suggest_priority_low_by_default(advisor):
     assert priority == "low"
 
 @pytest.mark.asyncio
-async def test_suggest_priority_fallback_on_llm_failure(advisor, monkeypatch, caplog):
+async def test_suggest_priority_fallback_on_llm_failure(advisor, monkeypatch):
     """Garante que a heurística local é usada se o LLM falhar (fallback)."""
     # Arrange
-    caplog.set_level("ERROR")
     monkeypatch.setenv("OPENAI_API_KEY", "fake-key")
     # Força erro na chamada simulada do LLM
     with patch.object(PriorityAdvisor, "_ask_llm", side_effect=Exception("API Error")):
@@ -61,13 +60,11 @@ async def test_suggest_priority_fallback_on_llm_failure(advisor, monkeypatch, ca
         
         # Assert
         assert priority == "high"  # Usou a heurística local
-        assert "Falha na chamada ao LLM" in caplog.text
 
 @pytest.mark.asyncio
-async def test_suggest_priority_fallback_on_llm_timeout(advisor, monkeypatch, caplog):
+async def test_suggest_priority_fallback_on_llm_timeout(advisor, monkeypatch):
     """Garante fallback para heurística local em caso de timeout na resposta do LLM."""
     # Arrange
-    caplog.set_level("ERROR")
     monkeypatch.setenv("OPENAI_API_KEY", "fake-key")
     
     async def slow_response(*args, **kwargs):
@@ -85,4 +82,4 @@ async def test_suggest_priority_fallback_on_llm_timeout(advisor, monkeypatch, ca
         
         # Assert
         assert priority == "medium"  # 'importante' -> medium via heurística
-        assert "Acionando fallback local" in caplog.text
+

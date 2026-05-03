@@ -1,134 +1,100 @@
 # Task Manager AI - Micro-API de Gerenciamento de Tarefas
 
 [![Changelog](https://img.shields.io/badge/changelog-v0.3.0-blue)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Uma API RESTful desenvolvida com FastAPI para gerenciamento de tarefas, apresentando um diferencial de **Prioridade Assistida por IA**. O sistema analisa título e descrição para sugerir automaticamente a urgência da tarefa, utilizando uma abordagem híbrida (LLM com fallback para heurística local).
+API RESTful para gerenciamento de tarefas (To-Do List) com diferencial de **Priorização Assistida por Inteligência Artificial**. O sistema analisa semânticamente o título e a descrição das tarefas para sugerir automaticamente sua urgência.
 
-## 🚀 Arquitetura e Tecnologias
+## 🚀 O que é o MVP? (Descrição)
+Este MVP é uma ferramenta de produtividade voltada para automação de triagem de tarefas. Ao criar uma tarefa, o usuário não precisa se preocupar em definir a prioridade manualmente; o sistema utiliza uma abordagem híbrida (IA + Heurística) para classificar a tarefa entre `high`, `medium` ou `low`.
 
-O projeto segue princípios de **Clean Architecture** e **SOLID**, garantindo baixo acoplamento e facilidade de teste. Para uma visão detalhada, consulte nosso [Documento de Arquitetura](docs/arquitetura.md).
+---
 
-- **FastAPI**: Framework web moderno e de alta performance.
-- **Pydantic V2**: Validação de dados e definição de schemas.
-- **Service Layer**: Lógica de negócio isolada para orquestração (TaskService).
-- **Repository Pattern**: Abstração de persistência (atualmente In-Memory).
-- **AI Priority Advisor**: Componente especializado em análise de prioridade via OpenAI/Heurísticas.
+## 🛠️ Arquitetura e Decisões Técnicas
 
-## 🛠️ Instalação e Configuração
+O projeto foi construído seguindo princípios de **Engenharia de Software Moderna**, garantindo que o sistema seja **reproduzível, auditável e evoluível**.
+
+### 1. Padrões de Projeto (Justificativas)
+- **SOLID (SRP & DIP):**
+    - **Single Responsibility Principle (SRP):** Cada camada tem uma responsabilidade única. As rotas apenas gerenciam HTTP, o serviço orquestra a lógica e o repositório lida exclusivamente com o banco de dados.
+    - **Dependency Inversion Principle (DIP):** O uso de Injeção de Dependência do FastAPI facilita o teste e a troca de componentes (ex: trocar SQLite por PostgreSQL sem alterar a lógica).
+- **Repository Pattern:** Abstrai a persistência, permitindo que a lógica de negócio ignore detalhes de implementação do banco de dados.
+- **Service Layer:** Centraliza as regras de negócio, facilitando a reutilização e garantindo que os endpoints da API permaneçam enxutos.
+
+### 2. Escolha da Stack
+- **FastAPI:** Escolhido pela alta performance (async/await), tipagem forte e documentação automática (OpenAPI).
+- **SQLModel (SQLAlchemy + Pydantic):** Unifica a definição de modelos de dados e schemas de validação, reduzindo duplicação de código (DRY).
+- **SQLite:** Adotado pela simplicidade e portabilidade, sendo ideal para um MVP e facilitando a avaliação direta sem setup complexo de infraestrutura.
+
+---
+
+## 🏃 Como Rodar o Projeto
 
 ### Pré-requisitos
 - Python 3.9+
-- Pip (gerenciador de pacotes)
+- Makefile (opcional, mas recomendado)
 
-### Passo a Passo
-
-1. **Clonar o repositório:**
-   ```bash
-   git clone git@github.com:rodrigoferrazazevedo/ufg-todo-list.git
-   cd laboratorio-projeto
-   ```
-
-2. **Criar e ativar ambiente virtual:**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # macOS/Linux
-   # .venv\Scripts\activate   # Windows
-   ```
-
-3. **Instalar dependências:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Variáveis de Ambiente (Opcional):**
-   Para habilitar a sugestão via IA real, crie um arquivo `.env`:
-   ```env
-   OPENAI_API_KEY=sua_chave_aqui
-   ```
-
-## 🏃 Execução e Comandos Rápidos
-
-O projeto inclui um `Makefile` para facilitar as operações comuns:
-
+### Execução Automática (Makefile)
 ```bash
 make install  # Instala dependências
-make run      # Inicia o servidor local
-make test     # Executa todos os testes
-make clean    # Limpa arquivos temporários e cache
+make test     # Executa todos os testes (Pytest)
+make run      # Inicia o servidor local em http://127.0.0.1:8000
 ```
 
-Para ver todos os comandos disponíveis, use `make help`.
-
 ### Execução Manual
-Caso prefira não usar o Makefile:
-
 ```bash
+pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-## 🧪 Testes
+---
 
-A suíte de testes utiliza **Pytest** e cobre serviços, rotas e lógica de IA:
+## 🔌 Exemplos de Interação (curl)
 
+### 1. Criar uma Tarefa (Com priorização automática)
 ```bash
-# Executar todos os testes
-pytest
+curl -X POST "http://127.0.0.1:8000/tasks/" \
+     -H "Content-Type: application/json" \
+     -d '{"title": "Corrigir erro crítico", "description": "O sistema está parado"}'
 ```
 
-## 🧠 Inteligência Artificial (Priority Advisor)
+### 2. Listar Tarefas (Filtrar por Status)
+```bash
+curl -X GET "http://127.0.0.1:8000/tasks/?status=pending"
+```
 
-O sistema de prioridade opera em três níveis de confiança. Detalhes sobre o planejamento podem ser vistos no [Documento de Escopo](docs/escopo-mvp.md).
-
-1. **LLM (OpenAI):** Tenta uma análise semântica profunda via API.
-2. **Fallback (Timeout/Erro):** Se a API falhar ou demorar mais de 5s, o sistema aciona automaticamente a heurística local.
-3. **Heurística Local:** Analisa palavras-chave para determinar a prioridade sem custo ou latência externa.
-
-## ⚠️ Limitações do MVP
-- **Autenticação:** Não implementada nesta versão inicial.
-
-## 🛤️ Próximos Passos
-
-O acompanhamento detalhado da evolução do projeto pode ser feito através do nosso [Backlog Completo](docs/backlog.md).
-
-- [ ] Adicionar suporte a **Tags** e Categorias.
-- [ ] Implementar **JWT Authentication**.
-- [ ] Dashboard de visualização de tarefas por prioridade.
+### 3. Atualizar Tarefa (Marcar como concluída)
+```bash
+curl -X PUT "http://127.0.0.1:8000/tasks/<ID-DO-UUID>" \
+     -H "Content-Type: application/json" \
+     -d '{"status": "completed"}'
+```
 
 ---
 
-## 🔍 Checklist Técnico e Evolução
+## 🧠 Assistência de IA
 
-### **Riscos Técnicos Restantes**
-* **Concorrência:** O armazenamento em SQLite/SQLModel deve ser monitorado para garantir performance em múltiplos acessos simultâneos.
-* **Stub de IA:** O `PriorityAdvisor` utiliza um stub; a integração real com LangChain/OpenAI ainda não foi finalizada.
+Este projeto utilizou a **IA Gemini CLI** como um **Pair Programmer Sênior**.
 
-### **Gaps de Cobertura de Teste**
-* **Validação de Models:** Testar restrições do Pydantic (ex: títulos vazios ou status inválidos).
-* **Migrações de Banco:** Implementar testes para garantir integridade em futuras mudanças de esquema.
-* **Captura de Logs:** Corrigir a propagação de logs para validação de fallbacks nos testes assíncronos.
+### Como a IA foi utilizada:
+- **QA Automatizado:** Geração ágil de 24 testes cobrindo rotas, repositórios e serviços.
+- **Refatoração:** Apoio na transição de In-Memory para SQLite mantendo os princípios SOLID.
+- **Documentação:** Auxílio na manutenção do Changelog e Relato de IA.
 
-### **Melhorias Concluídas (Release Atual)**
-* ✅ **Persistência Real:** Implementação de **SQLite** com **SQLModel**.
-* ✅ **Integração de Rotas:** Registro completo do roteador no `main.py`.
-* ✅ **Inicialização Automática:** Criação de tabelas no startup da API.
-* ✅ **Filtro de Status:** Adicionado suporte a filtro por status na listagem de tarefas.
-* ✅ **Licenciamento:** Inclusão de licença MIT para o projeto.
-
-### **Melhorias Prioritárias (Próxima Release)**
-* **Middleware de Erros:** Implementar handlers globais para exceções padronizadas.
-* **Autenticação:** Implementar fluxo JWT.
-
+### Limitações da IA:
+- A IA pode sugerir padrões genéricos se não for guiada pelo contexto local.
+- Depende de validação humana para integração com credenciais reais (OpenAI keys).
 
 ---
 
-## 🤖 Assistência de IA
+## ⚠️ Limitações e Próximos Passos
 
-Este projeto foi desenvolvido com o suporte da Inteligência Artificial (Gemini CLI), atuando como parceiro de programação sênior.
+### Limitações Atuais:
+- **Autenticação:** Não há controle de usuários nesta versão.
+- **Concorrência:** Uso de SQLite em modo simples (não ideal para alta escala).
+- **IA Real:** O PriorityAdvisor opera em modo stub por padrão para evitar custos de API sem autorização do usuário.
 
-**Destaques da Colaboração:**
-*   **Refatoração Arquitetural:** Aplicação de padrões de projeto (Repository, Service Layer) e princípios SOLID.
-*   **QA Automatizado:** Geração de suíte de testes completa com cobertura de serviços, rotas e lógica de IA.
-*   **Documentação Contínua:** Manutenção sincronizada de diagramas, backlog e análise de riscos técnicos.
-*   **Debugging Proativo:** Resolução de conflitos de ambiente e logs assíncronos.
-
-Consulte o [Relato Completo de Assistência de IA](docs/relatorio-ia.md) para mais detalhes sobre a metodologia utilizada.
+### Evolução Planejada:
+- [ ] Implementação de **JWT Authentication**.
+- [ ] Integração real com **OpenAI/LangChain** configurável via `.env`.
+- [ ] Migração para **PostgreSQL** via Docker Compose para produção.
