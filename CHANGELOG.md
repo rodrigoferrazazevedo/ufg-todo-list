@@ -5,6 +5,16 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-05-02
+
+### Adicionado
+- Dependências de teste (`pytest-asyncio`, `httpx`) incluídas explicitamente no `requirements.txt`.
+
+### Modificado
+- Versões das dependências fixadas no `requirements.txt` para garantir estabilidade (FastAPI, SQLModel).
+- Atualizadas docstrings dos endpoints para melhor clareza no Swagger UI.
+- Migrado uso de `datetime.utcnow()` para `datetime.now(timezone.utc)` nos testes (removendo avisos de depreciação).
+
 ## [0.2.0] - 2026-05-02
 
 ### Adicionado
