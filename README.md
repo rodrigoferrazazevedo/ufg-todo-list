@@ -89,21 +89,23 @@ O acompanhamento detalhado da evolução do projeto pode ser feito através do n
 ## 🔍 Checklist Técnico e Evolução
 
 ### **Riscos Técnicos Restantes**
-* **Volatilidade de Dados:** O repositório é instanciado a cada requisição no `task_routes.py`, fazendo com que os dados sejam perdidos imediatamente após cada chamada HTTP (falta de Singleton/Injeção persistente).
-* **API "Invisível":** O arquivo `app/main.py` ainda não registra o roteador de tarefas, impedindo o acesso aos endpoints via servidor Uvicorn.
-* **Concorrência:** O armazenamento em `dict` não é thread-safe para operações assíncronas simultâneas em produção.
+* **Concorrência:** O armazenamento em SQLite/SQLModel deve ser monitorado para garantir performance em múltiplos acessos simultâneos (embora o SQLite lide bem com acessos sequenciais).
 * **Stub de IA:** O `PriorityAdvisor` utiliza um stub; a integração real com LangChain/OpenAI ainda não foi finalizada.
 
 ### **Gaps de Cobertura de Teste**
 * **Validação de Models:** Testar restrições do Pydantic (ex: títulos vazios ou status inválidos).
-* **Persistência entre Chamadas:** Validar se uma tarefa criada via POST permanece disponível em GETs subsequentes.
+* **Migrações de Banco:** Implementar testes para garantir integridade em futuras mudanças de esquema (ex: usando Alembic).
 * **Captura de Logs:** Corrigir a propagação de logs para validação de fallbacks nos testes assíncronos.
 
+### **Melhorias Concluídas (Release Atual)**
+* ✅ **Persistência Real:** Implementação de **SQLite** com **SQLModel**.
+* ✅ **Integração de Rotas:** Registro completo do roteador no `main.py`.
+* ✅ **Inicialização Automática:** Criação de tabelas no startup da API.
+
 ### **Melhorias Prioritárias (Próxima Release)**
-* **Injeção de Singleton:** Garantir instância única do repositório no ciclo de vida da API.
-* **Registro de Rotas:** Conectar o roteador ao arquivo principal `main.py`.
-* **Banco de Dados:** Migrar para **SQLite** utilizando **SQLModel**.
 * **Middleware de Erros:** Implementar handlers globais para exceções padronizadas.
+* **Autenticação:** Implementar fluxo JWT.
+
 
 ---
 
