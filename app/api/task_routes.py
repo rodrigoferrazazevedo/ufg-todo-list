@@ -17,17 +17,26 @@ def get_task_service(session: Session = Depends(get_session)):
 
 @router.post("/", response_model=TaskOut, status_code=status.HTTP_201_CREATED)
 async def create_task(task: TaskCreate, service: TaskService = Depends(get_task_service)):
-    """Cria uma nova tarefa com sugestão de prioridade automática."""
+    """
+    Cria uma nova tarefa no banco de dados SQLite.
+    A prioridade é sugerida automaticamente pelo PriorityAdvisor (IA/Heurística) 
+    caso não seja informada manualmente.
+    """
     return await service.create_task(task)
 
 @router.get("/", response_model=List[TaskOut])
 async def list_tasks(service: TaskService = Depends(get_task_service)):
-    """Lista todas as tarefas."""
+    """
+    Recupera todas as tarefas persistidas no banco de dados.
+    """
     return await service.get_all_tasks()
 
 @router.get("/{task_id}", response_model=TaskOut)
 async def get_task(task_id: UUID, service: TaskService = Depends(get_task_service)):
-    """Busca uma tarefa pelo ID. Retorna 404 se não encontrada."""
+    """
+    Busca uma tarefa específica pelo seu ID único (UUID).
+    Retorna 404 se a tarefa não for encontrada.
+    """
     task = await service.get_task_by_id(task_id)
     if not task:
         raise HTTPException(
@@ -38,7 +47,10 @@ async def get_task(task_id: UUID, service: TaskService = Depends(get_task_servic
 
 @router.put("/{task_id}", response_model=TaskOut)
 async def update_task(task_id: UUID, task: TaskUpdate, service: TaskService = Depends(get_task_service)):
-    """Atualiza uma tarefa. Retorna 404 se não encontrada."""
+    """
+    Atualiza parcialmente os campos de uma tarefa existente.
+    Metadados como 'updated_at' são atualizados automaticamente.
+    """
     updated_task = await service.update_task(task_id, task)
     if not updated_task:
         raise HTTPException(
@@ -49,7 +61,9 @@ async def update_task(task_id: UUID, task: TaskUpdate, service: TaskService = De
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_task(task_id: UUID, service: TaskService = Depends(get_task_service)):
-    """Remove uma tarefa. Retorna 404 se não encontrada."""
+    """
+    Remove permanentemente uma tarefa do banco de dados SQLite.
+    """
     success = await service.delete_task(task_id)
     if not success:
         raise HTTPException(

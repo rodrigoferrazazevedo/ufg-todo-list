@@ -1,7 +1,7 @@
 import pytest
 from uuid import uuid4
 from unittest.mock import AsyncMock, MagicMock
-from datetime import datetime
+from datetime import datetime, timezone
 from app.services.task_service import TaskService
 from app.models.task import TaskCreate, TaskUpdate, TaskOut
 
@@ -21,13 +21,14 @@ def task_service(mock_repository, mock_priority_advisor):
 
 @pytest.fixture
 def sample_task_out():
+    now = datetime.now(timezone.utc)
     return TaskOut(
         id=uuid4(),
         title="Test Task",
         description="Test Description",
         status="pending",
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        created_at=now,
+        updated_at=now
     )
 
 @pytest.mark.asyncio
