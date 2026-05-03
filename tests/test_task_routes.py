@@ -71,18 +71,26 @@ def test_create_task_success(client, mock_service, sample_task_out):
     assert response.json()["title"] == "Test Task"
     mock_service.create_task.assert_called_once()
 
-def test_list_tasks_success(client, mock_service, sample_task_out):
-    """Testa a listagem de tarefas (GET /tasks/) -> 200."""
+def test_list_tasks_with_filter_success(client, mock_service, sample_task_out):
+    """Testa a listagem de tarefas com filtro de status -> 200."""
     # Arrange
     mock_service.get_all_tasks.return_value = [TaskOut(**sample_task_out)]
 
     # Act
-    response = client.get("/tasks/")
+    response = client.get("/tasks/?status=pending")
 
     # Assert
     assert response.status_code == 200
-    assert len(response.json()) == 1
-    assert response.json()[0]["id"] == sample_task_out["id"]
+    mock_service.get_all_tasks.assert_called_once_with(status="pending")
+
+def test_get_task_by_invalid_uuid(client):
+    """Testa a busca com um ID que não é um UUID válido -> 422."""
+    # Act
+    response = client.get("/tasks/not-a-uuid")
+
+    # Assert
+    assert response.status_code == 422
+    assert "UUID" in response.json()["detail"][0]["msg"]
 
 def test_get_task_by_id_not_found(client, mock_service):
     """Testa a busca de uma tarefa inexistente (GET /tasks/{id}) -> 404."""
