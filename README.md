@@ -1,5 +1,7 @@
 # Task Manager AI - Micro-API de Gerenciamento de Tarefas
 
+[![Changelog](https://img.shields.io/badge/changelog-v0.2.0-blue)](CHANGELOG.md)
+
 Uma API RESTful desenvolvida com FastAPI para gerenciamento de tarefas, apresentando um diferencial de **Prioridade Assistida por IA**. O sistema analisa título e descrição para sugerir automaticamente a urgência da tarefa, utilizando uma abordagem híbrida (LLM com fallback para heurística local).
 
 ## 🚀 Arquitetura e Tecnologias
