@@ -1,65 +1,65 @@
-from uuid import UUID, uuid4
+from uuid import UUID
 from datetime import datetime, timezone
-from typing import List, Optional, Dict
-from app.models.task import TaskCreate, TaskUpdate, TaskOut
+from typing import List, Optional
+from sqlmodel import Session, select
+from app.models.task import Task, TaskCreate, TaskUpdate, TaskOut
 
 class TaskRepository:
     """
-    Abstração para persistência de dados de tarefas.
-    Implementa um armazenamento em memória funcional para o CRUD.
+    Abstração para persistência de dados de tarefas utilizando SQLModel.
     """
     
-    def __init__(self):
-        # Armazenamento volátil para simular um banco de dados
-        self._storage: Dict[UUID, TaskOut] = {}
-
-    def _generate_metadata(self) -> dict:
-        """Centraliza a geração de campos controlados pelo sistema (DRY)."""
-        now = datetime.now(timezone.utc)
-        return {
-            "id": uuid4(),
-            "created_at": now,
-            "updated_at": now
-        }
+    def __init__(self, session: Session):
+        self.session = session
 
     async def save(self, task_data: TaskCreate, priority_hint: Optional[str] = None) -> TaskOut:
-        """Persiste uma nova tarefa, injetando metadados e prioridade sugerida."""
-        metadata = self._generate_metadata()
-        
-        # Cria o objeto TaskOut combinando dados de entrada, metadados e a sugestão de prioridade
+        """Persiste uma nova tarefa no SQLite."""
         task_dict = task_data.model_dump()
+        
+        # Injeta prioridade sugerida se não fornecida manualmente
         if priority_hint and not task_dict.get("priority"):
             task_dict["priority"] = priority_hint
             
-        task = TaskOut(**metadata, **task_dict)
-        self._storage[task.id] = task
-        return task
+        db_task = Task(**task_dict)
+        self.session.add(db_task)
+        self.session.commit()
+        self.session.refresh(db_task)
+        return TaskOut.model_validate(db_task)
 
     async def find_all(self) -> List[TaskOut]:
-        """Retorna todas as tarefas armazenadas."""
-        return list(self._storage.values())
+        """Retorna todas as tarefas persistidas."""
+        statement = select(Task)
+        results = self.session.exec(statement).all()
+        return [TaskOut.model_validate(task) for task in results]
 
     async def find_by_id(self, task_id: UUID) -> Optional[TaskOut]:
         """Busca uma tarefa específica por ID."""
-        return self._storage.get(task_id)
+        db_task = self.session.get(Task, task_id)
+        return TaskOut.model_validate(db_task) if db_task else None
 
     async def update(self, task_id: UUID, task_data: TaskUpdate) -> Optional[TaskOut]:
-        """Atualiza parcialmente uma tarefa existente."""
-        task = await self.find_by_id(task_id)
-        if not task:
+        """Atualiza parcialmente uma tarefa no banco de dados."""
+        db_task = self.session.get(Task, task_id)
+        if not db_task:
             return None
         
-        # Mescla dados existentes com novos dados (ignorando campos não enviados)
-        update_data = task_data.model_dump(exclude_unset=True)
-        updated_task = task.model_copy(update=update_data)
-        updated_task.updated_at = datetime.now(timezone.utc)
+        # Atualiza campos fornecidos
+        task_data_dict = task_data.model_dump(exclude_unset=True)
+        for key, value in task_data_dict.items():
+            setattr(db_task, key, value)
         
-        self._storage[task_id] = updated_task
-        return updated_task
+        db_task.updated_at = datetime.now(timezone.utc)
+        self.session.add(db_task)
+        self.session.commit()
+        self.session.refresh(db_task)
+        return TaskOut.model_validate(db_task)
 
     async def delete(self, task_id: UUID) -> bool:
-        """Remove uma tarefa e retorna sucesso."""
-        if task_id in self._storage:
-            del self._storage[task_id]
-            return True
-        return False
+        """Remove uma tarefa do banco de dados."""
+        db_task = self.session.get(Task, task_id)
+        if not db_task:
+            return False
+        
+        self.session.delete(db_task)
+        self.session.commit()
+        return True

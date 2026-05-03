@@ -1,16 +1,17 @@
 from uuid import UUID
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlmodel import Session
 from app.models.task import TaskCreate, TaskUpdate, TaskOut
 from app.services.task_service import TaskService
 from app.repositories.task_repository import TaskRepository
 from app.services.priority_advisor import PriorityAdvisor
+from app.database import get_session
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
-# Dependências (Poderiam estar em um arquivo separado de dependências)
-def get_task_service():
-    repo = TaskRepository()
+def get_task_service(session: Session = Depends(get_session)):
+    repo = TaskRepository(session)
     advisor = PriorityAdvisor()
     return TaskService(repo, advisor)
 
