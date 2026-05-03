@@ -22,7 +22,7 @@ graph LR
 
     subgraph Data_Layer [Camada de Dados]
         Repository[TaskRepository]
-        Storage[(In-Memory Storage)]
+        DB[(SQLite DB)]
     end
 
     subgraph External_Layer [Externo]
@@ -36,7 +36,7 @@ graph LR
     TaskService -->|CRUD Ops| Repository
     TaskService -->|Análise| PriorityAdvisor
     
-    Repository -->|Query/Persist| Storage
+    Repository -->|Query/Persist| DB
     PriorityAdvisor -->|Prompt/Analysis| LLM
     
     TaskService -->|Response Data| Endpoints
@@ -44,14 +44,12 @@ graph LR
 ```
 
 ## Descrição das Camadas
-- **API Layer**: Gerencia as rotas em `app/api/task_routes.py`, validações de entrada via schemas Pydantic e serialização de saída.
-- **Service Layer**: O `TaskService` orquestra a lógica de negócio (SRP). Ele decide quando acionar a IA para sugestão de prioridade e coordena a persistência.
-- **PriorityAdvisor**: Componente com lógica híbrida. Tenta integração com LLM (OpenAI) e possui fallback para heurística local baseada em palavras-chave.
-- **Data Layer**: O `TaskRepository` isola a persistência. Atualmente utiliza um dicionário em memória com geração automática de metadados (UUIDs, Timestamps).
+- **API Layer**: Gerencia as rotas em `app/api/task_routes.py`, agora devidamente integradas ao `app/main.py`.
+- **Service Layer**: O `TaskService` orquestra a lógica de negócio, garantindo que a persistência e a IA trabalhem em harmonia.
+- **PriorityAdvisor**: Especialista em análise de contexto (Híbrido: LLM + Heurística Local).
+- **Data Layer**: O `TaskRepository` utiliza **SQLModel** para persistência no banco de dados SQLite (`database.db`). A conexão é gerenciada por sessões injetadas via dependência do FastAPI.
 
-## Fluxo de Criação de Tarefa
-1. O usuário envia os dados básicos da tarefa.
-2. O `TaskService` solicita uma sugestão de prioridade ao `PriorityAdvisor`.
-3. O `PriorityAdvisor` retorna uma prioridade (via IA ou Heurística).
-4. O `TaskService` envia os dados + sugestão para o `TaskRepository`.
-5. O `TaskRepository` gera o ID, datas de criação/atualização e armazena o objeto.
+## Fluxo de Dados Persistente
+1. O `TaskRepository` recebe uma sessão ativa do banco de dados.
+2. Os modelos `Task` do SQLModel mapeiam diretamente as tabelas do SQLite.
+3. As operações de escrita (save/update/delete) executam o `commit()` na base física, garantindo a durabilidade dos dados.
