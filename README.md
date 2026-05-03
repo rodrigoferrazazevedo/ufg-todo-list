@@ -12,19 +12,19 @@ Este MVP é uma ferramenta de produtividade voltada para automação de triagem 
 
 ## 🛠️ Arquitetura e Decisões Técnicas
 
-O projeto foi construído seguindo princípios de **Engenharia de Software Moderna**, garantindo que o sistema seja **reproduzível, auditável e evoluível**.
+O projeto segue princípios de **Engenharia de Software Moderna**, garantindo que o sistema seja **reproduzível, auditável e evoluível**. Para uma visão detalhada, consulte nosso [Documento de Arquitetura](docs/arquitetura.md).
 
 ### 1. Padrões de Projeto (Justificativas)
 - **SOLID (SRP & DIP):**
-    - **Single Responsibility Principle (SRP):** Cada camada tem uma responsabilidade única. As rotas apenas gerenciam HTTP, o serviço orquestra a lógica e o repositório lida exclusivamente com o banco de dados.
-    - **Dependency Inversion Principle (DIP):** O uso de Injeção de Dependência do FastAPI facilita o teste e a troca de componentes (ex: trocar SQLite por PostgreSQL sem alterar a lógica).
+    - **Single Responsibility Principle (SRP):** Cada camada tem uma responsabilidade única. As rotas gerenciam HTTP, o serviço orquestra a lógica e o repositório lida com o banco de dados.
+    - **Dependency Inversion Principle (DIP):** O uso de Injeção de Dependência do FastAPI facilita o teste e a troca de componentes.
 - **Repository Pattern:** Abstrai a persistência, permitindo que a lógica de negócio ignore detalhes de implementação do banco de dados.
-- **Service Layer:** Centraliza as regras de negócio, facilitando a reutilização e garantindo que os endpoints da API permaneçam enxutos.
+- **Service Layer:** Centraliza as regras de negócio, facilitando a reutilização e mantendo os endpoints enxutos.
 
 ### 2. Escolha da Stack
-- **FastAPI:** Escolhido pela alta performance (async/await), tipagem forte e documentação automática (OpenAPI).
-- **SQLModel (SQLAlchemy + Pydantic):** Unifica a definição de modelos de dados e schemas de validação, reduzindo duplicação de código (DRY).
-- **SQLite:** Adotado pela simplicidade e portabilidade, sendo ideal para um MVP e facilitando a avaliação direta sem setup complexo de infraestrutura.
+- **FastAPI:** Alta performance (async/await) e documentação automática.
+- **SQLModel (SQLAlchemy + Pydantic):** Unifica modelos de dados e schemas de validação (DRY).
+- **SQLite:** Portabilidade e simplicidade para um MVP.
 
 ---
 
@@ -34,17 +34,12 @@ O projeto foi construído seguindo princípios de **Engenharia de Software Moder
 - Python 3.9+
 - Makefile (opcional, mas recomendado)
 
-### Execução Automática (Makefile)
+### Execução Rápida (Makefile)
 ```bash
 make install  # Instala dependências
-make test     # Executa todos os testes (Pytest)
+make test     # Executa a suíte de 24 testes (Pytest)
 make run      # Inicia o servidor local em http://127.0.0.1:8000
-```
-
-### Execução Manual
-```bash
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+make clean    # Limpa cache e arquivos temporários
 ```
 
 ---
@@ -72,29 +67,39 @@ curl -X PUT "http://127.0.0.1:8000/tasks/<ID-DO-UUID>" \
 
 ---
 
-## 🧠 Assistência de IA
+## 🧠 Inteligência Artificial e Heurísticas
 
-Este projeto utilizou a **IA Gemini CLI** como um **Pair Programmer Sênior**.
+O sistema de prioridade opera em três níveis de confiança. Detalhes sobre o planejamento podem ser vistos no [Documento de Escopo](docs/escopo-mvp.md).
 
-### Como a IA foi utilizada:
-- **QA Automatizado:** Geração ágil de 24 testes cobrindo rotas, repositórios e serviços.
-- **Refatoração:** Apoio na transição de In-Memory para SQLite mantendo os princípios SOLID.
-- **Documentação:** Auxílio na manutenção do Changelog e Relato de IA.
-
-### Limitações da IA:
-- A IA pode sugerir padrões genéricos se não for guiada pelo contexto local.
-- Depende de validação humana para integração com credenciais reais (OpenAI keys).
+1. **LLM (OpenAI):** Tenta uma análise semântica profunda via API.
+2. **Fallback (Timeout/Erro):** Se a API falhar ou demorar, o sistema aciona a heurística local.
+3. **Heurística Local:** Analisa palavras-chave para determinar a prioridade sem custo ou latência.
 
 ---
 
-## ⚠️ Limitações e Próximos Passos
+## 🔍 Checklist Técnico e Evolução
 
-### Limitações Atuais:
-- **Autenticação:** Não há controle de usuários nesta versão.
-- **Concorrência:** Uso de SQLite em modo simples (não ideal para alta escala).
-- **IA Real:** O PriorityAdvisor opera em modo stub por padrão para evitar custos de API sem autorização do usuário.
+### **Riscos Técnicos Restantes**
+* **Concorrência:** SQLite deve ser monitorado em cenários de múltiplos acessos simultâneos de escrita.
+* **Stub de IA:** A integração real com LangChain/OpenAI exige configuração de chaves reais no `.env`.
 
-### Evolução Planejada:
-- [ ] Implementação de **JWT Authentication**.
-- [ ] Integração real com **OpenAI/LangChain** configurável via `.env`.
-- [ ] Migração para **PostgreSQL** via Docker Compose para produção.
+### **Melhorias Concluídas**
+* ✅ **Persistência Real:** SQLite com SQLModel.
+* ✅ **Filtro de Status:** Parâmetro `?status=` na listagem.
+* ✅ **Licenciamento:** Licença MIT incluída.
+* ✅ **QA Robusto:** 24 testes cobrindo todas as camadas.
+
+O acompanhamento detalhado pode ser feito através do nosso [Backlog Completo](docs/backlog.md).
+
+---
+
+## 🤖 Assistência de IA
+
+Este projeto foi desenvolvido com suporte da **Gemini CLI**, atuando como parceiro de programação sênior.
+
+**Destaques da Colaboração:**
+* **QA Automatizado:** Geração de 24 testes de unidade e integração.
+* **Refatoração:** Transição segura para SQLite mantendo princípios SOLID.
+* **Documentação:** Manutenção sincronizada de diagramas e análise de riscos.
+
+Consulte o [Relato Completo de Assistência de IA](docs/relatorio-ia.md) para mais detalhes.
