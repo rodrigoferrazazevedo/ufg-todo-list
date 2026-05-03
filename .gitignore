@@ -59,3 +59,4 @@ coverage.xml
 # OS Specific
 .DS_Store
 Thumbs.db
+database.db
