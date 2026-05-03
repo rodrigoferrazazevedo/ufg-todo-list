@@ -1,6 +1,6 @@
 # Task Manager AI - Micro-API de Gerenciamento de Tarefas
 
-[![Changelog](https://img.shields.io/badge/changelog-v0.2.1-blue)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-v0.3.0-blue)](CHANGELOG.md)
 
 Uma API RESTful desenvolvida com FastAPI para gerenciamento de tarefas, apresentando um diferencial de **Prioridade Assistida por IA**. O sistema analisa título e descrição para sugerir automaticamente a urgência da tarefa, utilizando uma abordagem híbrida (LLM com fallback para heurística local).
 
@@ -74,15 +74,13 @@ O sistema de prioridade opera em três níveis de confiança. Detalhes sobre o p
 3. **Heurística Local:** Analisa palavras-chave para determinar a prioridade sem custo ou latência externa.
 
 ## ⚠️ Limitações do MVP
-- **Persistência Volátil:** Os dados são armazenados em memória e perdidos ao reiniciar o servidor.
 - **Autenticação:** Não implementada nesta versão inicial.
 
 ## 🛤️ Próximos Passos
 
 O acompanhamento detalhado da evolução do projeto pode ser feito através do nosso [Backlog Completo](docs/backlog.md).
 
-- [ ] Implementar persistência real com **SQLite** e **SQLModel**.
-- [ ] Adicionar suporte a **Filtros** na listagem de tarefas.
+- [ ] Adicionar suporte a **Tags** e Categorias.
 - [ ] Implementar **JWT Authentication**.
 - [ ] Dashboard de visualização de tarefas por prioridade.
 
@@ -91,18 +89,20 @@ O acompanhamento detalhado da evolução do projeto pode ser feito através do n
 ## 🔍 Checklist Técnico e Evolução
 
 ### **Riscos Técnicos Restantes**
-* **Concorrência:** O armazenamento em SQLite/SQLModel deve ser monitorado para garantir performance em múltiplos acessos simultâneos (embora o SQLite lide bem com acessos sequenciais).
+* **Concorrência:** O armazenamento em SQLite/SQLModel deve ser monitorado para garantir performance em múltiplos acessos simultâneos.
 * **Stub de IA:** O `PriorityAdvisor` utiliza um stub; a integração real com LangChain/OpenAI ainda não foi finalizada.
 
 ### **Gaps de Cobertura de Teste**
 * **Validação de Models:** Testar restrições do Pydantic (ex: títulos vazios ou status inválidos).
-* **Migrações de Banco:** Implementar testes para garantir integridade em futuras mudanças de esquema (ex: usando Alembic).
+* **Migrações de Banco:** Implementar testes para garantir integridade em futuras mudanças de esquema.
 * **Captura de Logs:** Corrigir a propagação de logs para validação de fallbacks nos testes assíncronos.
 
 ### **Melhorias Concluídas (Release Atual)**
 * ✅ **Persistência Real:** Implementação de **SQLite** com **SQLModel**.
 * ✅ **Integração de Rotas:** Registro completo do roteador no `main.py`.
 * ✅ **Inicialização Automática:** Criação de tabelas no startup da API.
+* ✅ **Filtro de Status:** Adicionado suporte a filtro por status na listagem de tarefas.
+* ✅ **Licenciamento:** Inclusão de licença MIT para o projeto.
 
 ### **Melhorias Prioritárias (Próxima Release)**
 * **Middleware de Erros:** Implementar handlers globais para exceções padronizadas.
@@ -122,5 +122,3 @@ Este projeto foi desenvolvido com o suporte da Inteligência Artificial (Gemini 
 *   **Debugging Proativo:** Resolução de conflitos de ambiente e logs assíncronos.
 
 Consulte o [Relato Completo de Assistência de IA](docs/relatorio-ia.md) para mais detalhes sobre a metodologia utilizada.
-
-

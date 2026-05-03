@@ -1,5 +1,5 @@
 from uuid import UUID
-from typing import List
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 from app.models.task import TaskCreate, TaskUpdate, TaskOut
@@ -25,11 +25,12 @@ async def create_task(task: TaskCreate, service: TaskService = Depends(get_task_
     return await service.create_task(task)
 
 @router.get("/", response_model=List[TaskOut])
-async def list_tasks(service: TaskService = Depends(get_task_service)):
+async def list_tasks(status: Optional[str] = None, service: TaskService = Depends(get_task_service)):
     """
-    Recupera todas as tarefas persistidas no banco de dados.
+    Recupera as tarefas persistidas no banco de dados.
+    Pode ser filtrado pelo status (ex: ?status=completed).
     """
-    return await service.get_all_tasks()
+    return await service.get_all_tasks(status=status)
 
 @router.get("/{task_id}", response_model=TaskOut)
 async def get_task(task_id: UUID, service: TaskService = Depends(get_task_service)):

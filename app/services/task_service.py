@@ -21,8 +21,8 @@ class TaskService:
         )
         return await self.repository.save(task_data, priority_hint=suggestion)
 
-    async def get_all_tasks(self) -> List[TaskOut]:
-        return await self.repository.find_all()
+    async def get_all_tasks(self, status: Optional[str] = None) -> List[TaskOut]:
+        return await self.repository.find_all(status=status)
 
     async def get_task_by_id(self, task_id: UUID) -> Optional[TaskOut]:
         return await self.repository.find_by_id(task_id)

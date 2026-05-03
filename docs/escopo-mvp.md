@@ -9,7 +9,7 @@ Desenvolver uma ferramenta de back-end que automatize a organização de tarefas
 - [x] **RF01 - CRUD de Tarefas:** Operações completas de criação, leitura, atualização e exclusão (Implementado).
 - [x] **RF02 - Persistência Local (SQLite):** Implementado via SQLModel e base de dados física `database.db`.
 - [x] **RF03 - Priorização Inteligente:** Integração automática no fluxo de criação de tarefas (Implementado via PriorityAdvisor).
-- [ ] **RF04 - Filtro de Prioridade:** Adicionar parâmetros de query na listagem para filtrar por prioridade ou status (Pendente).
+- [x] **RF04 - Filtro de Status:** Possibilidade de filtrar tarefas via query param `?status=` na listagem (Implementado).
 - [x] **RF05 - Verificação de Saúde:** Endpoint `/health` operacional (Implementado).
 
 ## 3. Requisitos Não Funcionais (RNF)

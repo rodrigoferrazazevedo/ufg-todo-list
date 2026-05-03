@@ -26,9 +26,12 @@ class TaskRepository:
         self.session.refresh(db_task)
         return TaskOut.model_validate(db_task)
 
-    async def find_all(self) -> List[TaskOut]:
-        """Retorna todas as tarefas persistidas."""
+    async def find_all(self, status: Optional[str] = None) -> List[TaskOut]:
+        """Retorna todas as tarefas persistidas, opcionalmente filtradas por status."""
         statement = select(Task)
+        if status:
+            statement = statement.where(Task.status == status)
+        
         results = self.session.exec(statement).all()
         return [TaskOut.model_validate(task) for task in results]
 
